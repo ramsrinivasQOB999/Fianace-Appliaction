@@ -38,6 +38,7 @@
     <include file="config/liquibase/changelog/20260420090845_added_entity_constraints_ExpenseCategory.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20260420090846_added_entity_constraints_Expense.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20260420090847_added_entity_constraints_Transfer.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20260423122000_alter_business_logo_url_to_text.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
     <!-- jhipster-needle-liquibase-add-incremental-changelog - JHipster will add incremental liquibase changelogs here -->
 </databaseChangeLog>

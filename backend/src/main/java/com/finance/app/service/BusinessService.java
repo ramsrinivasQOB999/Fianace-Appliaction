@@ -4,6 +4,7 @@ import com.finance.app.domain.Business;
 import com.finance.app.repository.BusinessRepository;
 import com.finance.app.service.dto.BusinessDTO;
 import com.finance.app.service.mapper.BusinessMapper;
+import java.time.Instant;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +40,10 @@ public class BusinessService {
     public BusinessDTO save(BusinessDTO businessDTO) {
         LOG.debug("Request to save Business : {}", businessDTO);
         Business business = businessMapper.toEntity(businessDTO);
+        if (business.getCreatedAt() == null) {
+            business.setCreatedAt(Instant.now());
+        }
+        business.setUpdatedAt(Instant.now());
         business = businessRepository.save(business);
         return businessMapper.toDto(business);
     }
@@ -52,6 +57,16 @@ public class BusinessService {
     public BusinessDTO update(BusinessDTO businessDTO) {
         LOG.debug("Request to update Business : {}", businessDTO);
         Business business = businessMapper.toEntity(businessDTO);
+        if (business.getCreatedAt() == null && business.getId() != null) {
+            Optional<Business> existingBusiness = businessRepository.findById(business.getId());
+            if (existingBusiness.isPresent()) {
+                business.setCreatedAt(existingBusiness.get().getCreatedAt());
+            }
+        }
+        if (business.getCreatedAt() == null) {
+            business.setCreatedAt(Instant.now());
+        }
+        business.setUpdatedAt(Instant.now());
         business = businessRepository.save(business);
         return businessMapper.toDto(business);
     }
@@ -69,6 +84,10 @@ public class BusinessService {
             .findById(businessDTO.getId())
             .map(existingBusiness -> {
                 businessMapper.partialUpdate(existingBusiness, businessDTO);
+                if (existingBusiness.getCreatedAt() == null) {
+                    existingBusiness.setCreatedAt(Instant.now());
+                }
+                existingBusiness.setUpdatedAt(Instant.now());
 
                 return existingBusiness;
             })

@@ -28,7 +28,6 @@ public class BusinessDTO implements Serializable {
     @Size(max = 254)
     private String email;
 
-    @Size(max = 1024)
     private String logoUrl;
 
     @Size(max = 15)
@@ -90,7 +89,6 @@ public class BusinessDTO implements Serializable {
 
     private Boolean hasData;
 
-    @NotNull
     private Instant createdAt;
 
     private Instant updatedAt;

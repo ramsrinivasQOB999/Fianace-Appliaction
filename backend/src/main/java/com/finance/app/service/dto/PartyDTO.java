@@ -63,7 +63,6 @@ public class PartyDTO implements Serializable {
     @NotNull
     private BigDecimal balance;
 
-    @NotNull
     private Instant createdAt;
 
     private Instant updatedAt;

@@ -1,0 +1,13 @@
+entity Business {
+  name String required maxlength(120),
+  currency String required minlength(3) maxlength(3),
+  gstin String maxlength(20),
+  phone String maxlength(30),
+  email String maxlength(120),
+  address String maxlength(500),
+  isActive Boolean required
+}
+
+dto Business with mapstruct
+service Business with serviceClass
+paginate Business with pagination

@@ -45,8 +45,8 @@ public class Business implements Serializable {
     @Column(name = "email", length = 254)
     private String email;
 
-    @Size(max = 1024)
-    @Column(name = "logo_url", length = 1024)
+    @Lob
+    @Column(name = "logo_url")
     private String logoUrl;
 
     @Size(max = 15)
@@ -134,6 +134,25 @@ public class Business implements Serializable {
     private Instant updatedAt;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
+
+    @PrePersist
+    public void prePersist() {
+        Instant now = Instant.now();
+        if (createdAt == null) {
+            createdAt = now;
+        }
+        if (updatedAt == null) {
+            updatedAt = now;
+        }
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        updatedAt = Instant.now();
+        if (createdAt == null) {
+            createdAt = updatedAt;
+        }
+    }
 
     public Long getId() {
         return this.id;

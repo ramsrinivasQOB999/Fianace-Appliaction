@@ -165,6 +165,25 @@ public class Purchase implements Serializable {
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
+    @PrePersist
+    public void prePersist() {
+        Instant now = Instant.now();
+        if (createdAt == null) {
+            createdAt = now;
+        }
+        if (updatedAt == null) {
+            updatedAt = now;
+        }
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        updatedAt = Instant.now();
+        if (createdAt == null) {
+            createdAt = updatedAt;
+        }
+    }
+
     public Long getId() {
         return this.id;
     }
