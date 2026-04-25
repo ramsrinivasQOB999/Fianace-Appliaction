@@ -37,6 +37,7 @@ spring:
     username: ${SPRING_DATASOURCE_USERNAME:postgres}
     password: ${SPRING_DATASOURCE_PASSWORD:}
     hikari:
+      auto-commit: false
       connection-timeout: 30000
       validation-timeout: 5000
       max-lifetime: 1800000
