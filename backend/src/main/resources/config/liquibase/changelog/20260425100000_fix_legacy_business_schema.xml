@@ -34,16 +34,38 @@
         </sql>
 
         <!-- Backfill from old column names where available -->
-        <sql>
-            UPDATE business
-            SET mobile = RIGHT(REGEXP_REPLACE(phone, '[^0-9]', '', 'g'), 10)
-            WHERE mobile IS NULL AND phone IS NOT NULL;
+        <sql splitStatements="false">
+            DO $$
+            BEGIN
+                IF EXISTS (
+                    SELECT 1
+                    FROM information_schema.columns
+                    WHERE table_schema = current_schema()
+                      AND table_name = 'business'
+                      AND column_name = 'phone'
+                ) THEN
+                    UPDATE business
+                    SET mobile = RIGHT(REGEXP_REPLACE(phone, '[^0-9]', '', 'g'), 10)
+                    WHERE mobile IS NULL AND phone IS NOT NULL;
+                END IF;
+            END $$;
         </sql>
 
-        <sql>
-            UPDATE business
-            SET gst_number = UPPER(gstin)
-            WHERE gst_number IS NULL AND gstin IS NOT NULL;
+        <sql splitStatements="false">
+            DO $$
+            BEGIN
+                IF EXISTS (
+                    SELECT 1
+                    FROM information_schema.columns
+                    WHERE table_schema = current_schema()
+                      AND table_name = 'business'
+                      AND column_name = 'gstin'
+                ) THEN
+                    UPDATE business
+                    SET gst_number = UPPER(gstin)
+                    WHERE gst_number IS NULL AND gstin IS NOT NULL;
+                END IF;
+            END $$;
         </sql>
 
         <sql>
