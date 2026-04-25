@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <!--
+      Fix legacy Business table shape from old migrations:
+      - old: phone, gstin, address/json columns, no created_at/mobile/gst_number...
+      - new entity expects: mobile, gst_number, created_at, updated_at, has_data, billing_/shipping_ split fields.
+      This changeset is safe for both old and new databases.
+    -->
+    <changeSet id="20260425100000-1" author="codex">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="business"/>
+        </preConditions>
+
+        <sql>
+            ALTER TABLE business ADD COLUMN IF NOT EXISTS mobile varchar(10);
+            ALTER TABLE business ADD COLUMN IF NOT EXISTS gst_number varchar(15);
+            ALTER TABLE business ADD COLUMN IF NOT EXISTS billing_line_1 varchar(200);
+            ALTER TABLE business ADD COLUMN IF NOT EXISTS billing_line_2 varchar(200);
+            ALTER TABLE business ADD COLUMN IF NOT EXISTS billing_city varchar(120);
+            ALTER TABLE business ADD COLUMN IF NOT EXISTS billing_state varchar(80);
+            ALTER TABLE business ADD COLUMN IF NOT EXISTS billing_pincode varchar(6);
+            ALTER TABLE business ADD COLUMN IF NOT EXISTS shipping_line_1 varchar(200);
+            ALTER TABLE business ADD COLUMN IF NOT EXISTS shipping_line_2 varchar(200);
+            ALTER TABLE business ADD COLUMN IF NOT EXISTS shipping_city varchar(120);
+            ALTER TABLE business ADD COLUMN IF NOT EXISTS shipping_state varchar(80);
+            ALTER TABLE business ADD COLUMN IF NOT EXISTS shipping_pincode varchar(6);
+            ALTER TABLE business ADD COLUMN IF NOT EXISTS has_data boolean;
+            ALTER TABLE business ADD COLUMN IF NOT EXISTS created_at timestamp;
+            ALTER TABLE business ADD COLUMN IF NOT EXISTS updated_at timestamp;
+        </sql>
+
+        <!-- Backfill from old column names where available -->
+        <sql>
+            UPDATE business
+            SET mobile = RIGHT(REGEXP_REPLACE(phone, '[^0-9]', '', 'g'), 10)
+            WHERE mobile IS NULL AND phone IS NOT NULL;
+        </sql>
+
+        <sql>
+            UPDATE business
+            SET gst_number = UPPER(gstin)
+            WHERE gst_number IS NULL AND gstin IS NOT NULL;
+        </sql>
+
+        <sql>
+            UPDATE business
+            SET created_at = CURRENT_TIMESTAMP
+            WHERE created_at IS NULL;
+        </sql>
+
+        <sql>
+            UPDATE business
+            SET has_data = FALSE
+            WHERE has_data IS NULL;
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>
