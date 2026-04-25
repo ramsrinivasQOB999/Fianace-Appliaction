@@ -7,6 +7,7 @@ import {
   useRouter,
   useRouterState,
   redirect,
+  useNavigate,
 } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 
@@ -82,6 +83,8 @@ function NotFoundComponent() {
 export const Route = createRootRoute({
   beforeLoad: ({ location }) => {
     if (!USE_BACKEND) return;
+    // Skip during SSR/prerender — localStorage is only available in the browser.
+    if (typeof window === "undefined") return;
     const token = getJwt();
     if (!token && location.pathname !== "/login") {
       throw redirect({ to: "/login" });
@@ -144,14 +147,20 @@ function RootComponent() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const { isAuthed } = useAuth();
   const snapshot = useDashboardSnapshot();
+  const navigate = useNavigate();
 
   const isAuthScreen = pathname === "/login";
   const shouldGate = USE_BACKEND && !isAuthed && !isAuthScreen;
 
+  useEffect(() => {
+    if (shouldGate) {
+      navigate({ to: "/login", replace: true });
+    }
+  }, [shouldGate, navigate]);
+
   if (shouldGate) {
     return (
       <div className="min-h-screen">
-        {/* Redirecting to /login */}
         <Toaster richColors position="top-right" />
       </div>
     );
