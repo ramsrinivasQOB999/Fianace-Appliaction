@@ -52,7 +52,8 @@ export function AIAskDrawer({ snapshot }: { snapshot: unknown }) {
       <button
         onClick={() => setOpen(true)}
         className="fixed bottom-6 right-6 z-40 flex h-14 w-14 items-center justify-center rounded-full primary-gradient primary-glow text-white shadow-lg animate-pulse-primary hover:scale-105 transition-transform"
-        aria-label="Ask AI"
+        aria-label="AI Assistent"
+        title="AI Assistent"
       >
         <Sparkles className="h-6 w-6" />
       </button>
