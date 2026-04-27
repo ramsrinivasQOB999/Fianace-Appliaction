@@ -59,7 +59,7 @@ export const Route = createFileRoute("/invoices")({
     searchSchema.parse(search),
   head: () => ({
     meta: [
-      { title: "Invoices — Sales & Receivables" },
+      { title: "Sales — Sales & Receivables" },
       {
         name: "description",
         content: "Manage all your invoices. Track totals, payments and outstanding balances.",
@@ -166,7 +166,7 @@ function InvoicesPage() {
               <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
                 {activeBusiness?.name ?? "Workspace"}
               </p>
-              <h1 className="mt-1 text-3xl font-bold tracking-tight">Invoices</h1>
+              <h1 className="mt-1 text-3xl font-bold tracking-tight">Sales</h1>
               <p className="mt-1 text-sm text-muted-foreground">
                 {hydrated
                   ? `${totals.count} active • ${formatCurrency(totals.outstanding, currency)} outstanding`
@@ -176,7 +176,7 @@ function InvoicesPage() {
             <Button asChild size="lg" className="gap-2">
               <Link to="/invoices/new">
                 <Plus className="h-4 w-4" />
-                Create Invoice
+                Create Sales
               </Link>
             </Button>
           </div>
@@ -576,7 +576,7 @@ function EmptyState({ filtered }: { filtered: boolean }) {
       <Button asChild size="lg" className="mt-6 gap-2">
         <Link to="/invoices/new">
           <Plus className="h-4 w-4" />
-          Create Invoice
+          Create Sales
         </Link>
       </Button>
     </div>

@@ -44,6 +44,8 @@ function dtoToItem(dto: ItemDTO): Item {
     description: dto.description ?? undefined,
     openingStock: dto.openingStock ?? undefined,
     reorderLevel: dto.reorderLevel ?? undefined,
+    createdAt: dto.createdAt ?? undefined,
+    updatedAt: dto.updatedAt ?? undefined,
   };
 }
 
@@ -62,6 +64,8 @@ function itemToDto(it: Item): ItemDTO {
     description: it.description ?? null,
     openingStock: it.openingStock ?? null,
     reorderLevel: it.reorderLevel ?? null,
+    createdAt: it.createdAt ?? undefined,
+    updatedAt: it.updatedAt ?? undefined,
     business: businessRefFromId(it.businessId),
   };
 }
@@ -181,16 +185,14 @@ export function useItems(businessId?: string | null) {
     const token = getJwt();
     if (!USE_BACKEND || !token) return;
     const biz = businessId ? parseInt(businessId, 10) : NaN;
-    if (!businessId || isNaN(biz)) {
-      setItems([]);
-      return;
-    }
+    const hasBusinessScope = businessId && !isNaN(biz);
     let cancelled = false;
     (async () => {
       try {
-        const list = await apiFetch<ItemDTO[]>(
-          `/api/items?businessId.equals=${biz}&size=500&sort=id,desc`,
-        );
+        const url = hasBusinessScope
+          ? `/api/items?businessId.equals=${biz}&size=500&sort=id,desc`
+          : "/api/items?size=500&sort=id,desc";
+        const list = await apiFetch<ItemDTO[]>(url);
         if (cancelled) return;
         setItems(list.map(dtoToItem));
       } catch {
@@ -214,7 +216,11 @@ export function useItems(businessId?: string | null) {
       return (async () => {
         const isUpdate = /^\d+$/.test(it.id);
         const dto = itemToDto(it);
-        if (!isUpdate) delete dto.id;
+        if (!isUpdate) {
+          delete dto.id;
+          delete dto.createdAt;
+          delete dto.updatedAt;
+        }
         const saved = await apiFetch<ItemDTO>(isUpdate ? `/api/items/${it.id}` : "/api/items", {
           method: isUpdate ? "PUT" : "POST",
           body: JSON.stringify(dto),

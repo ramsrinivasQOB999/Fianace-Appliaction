@@ -22,7 +22,7 @@ const navLinks = [
   { to: "/businesses", label: "Businesses", icon: Building2 },
   { to: "/parties", label: "Parties", icon: Users },
   { to: "/items", label: "Items", icon: Package },
-  { to: "/invoices", label: "Invoices", icon: FileText },
+  { to: "/invoices", label: "Sales", icon: FileText },
   { to: "/credit-notes", label: "Credit Notes", icon: FileMinus },
   { to: "/purchases", label: "Purchases", icon: ShoppingCart },
   { to: "/purchase-returns", label: "Purchase Returns", icon: Undo2 },

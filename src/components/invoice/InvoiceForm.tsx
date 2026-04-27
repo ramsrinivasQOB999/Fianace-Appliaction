@@ -349,6 +349,9 @@ export function InvoiceForm({ mode, invoiceId }: Props) {
         to: "/invoices",
         search: { q: "", status: "all", payment: "all", from: "", to: "" },
       });
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Could not save sales";
+      toast.error(msg);
     } finally {
       setSubmitting(false);
     }

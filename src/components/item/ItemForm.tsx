@@ -132,12 +132,15 @@ export function ItemForm({ mode, itemId }: Props) {
           description: emptyToUndef(values.description),
           active: values.active,
           deleted: existing?.deleted,
+          createdAt: existing?.createdAt,
+          updatedAt: existing?.updatedAt,
         };
         await upsert(item);
         toast.success(mode === "edit" ? "Item updated" : "Item added");
         navigate(cancelHref);
-      } catch {
-        toast.error("Could not save item");
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : "Could not save item";
+        toast.error(msg);
       } finally {
         setSubmitting(false);
       }

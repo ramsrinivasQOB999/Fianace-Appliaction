@@ -17,4 +17,7 @@ export interface Item {
   // Inventory — UI is visible but the feature is not active yet.
   openingStock?: number;
   reorderLevel?: number;
+  // Server-managed timestamps (kept for backend PUT compatibility).
+  createdAt?: string;
+  updatedAt?: string;
 }

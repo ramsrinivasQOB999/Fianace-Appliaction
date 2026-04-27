@@ -439,7 +439,13 @@ export function useInvoices(businessId?: string | null) {
           })
         : await apiFetch<InvoiceDTO>(`/api/invoices`, {
             method: "POST",
-            body: JSON.stringify({ ...dto, id: undefined }),
+            body: JSON.stringify({
+              ...dto,
+              id: undefined,
+              // Compatibility fallback: some deployed backends still validate createdAt as @NotNull.
+              createdAt: dto.createdAt ?? new Date().toISOString(),
+              updatedAt: dto.updatedAt ?? new Date().toISOString(),
+            }),
           });
 
       const savedId = toStrId(saved.id);
